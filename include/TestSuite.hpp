@@ -9,22 +9,14 @@
 class TestSuite : public TestUnit
 {
 	public:
-		typedef std::list<TestSuite>::const_iterator	suite_iter;
-		typedef std::list<TestCase>::const_iterator		tcase_iter;
-
-
-	private:
-		std::list< TestCase >				_suite;
-
-
-	public:
+		std::list< TestCase >				suite;
 		static std::list< TestSuite >		suite_list;
 
 
 	public:
 		TestSuite( void );
 		TestSuite( const TestSuite& src );
-		TestSuite( const std::string& name );
+		TestSuite( const std::string& name, unsigned t = 0, unsigned ex = 0 );
 		~TestSuite( void );
 
 		TestSuite&	operator=( const TestSuite& rhs );
@@ -34,12 +26,6 @@ class TestSuite : public TestUnit
 
 		void
 		add( TestCase& tc );
-
-		void
-		run( void );
-
-		static void
-		print( void );
 
 
 };

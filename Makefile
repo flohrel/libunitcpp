@@ -13,7 +13,8 @@ DEPDIR		=	$(BUILDIR)/.deps
 TEST		=	main.cpp
 SRC			=	TestUnit.cpp \
 				TestSuite.cpp \
-				TestCase.cpp
+				TestCase.cpp \
+				TestRunner.cpp
 SRC			+=	$(TEST)
 OBJ			=	$(SRC:%.cpp=$(BUILDIR)/%.o)
 DEP			=	$(SRC:%.cpp=$(DEPDIR)/%.d)

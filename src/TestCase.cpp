@@ -3,8 +3,8 @@
 TestCase::TestCase( void )
 { return ; }
 
-TestCase::TestCase( const std::string& str, test_ft ft )
-: TestUnit(str), _ft_ptr(ft)
+TestCase::TestCase( const std::string& str, test_ft ft, unsigned time = 0, unsigned nb_fail = 0 )
+: TestUnit(t_case, str, time, nb_fail), _ft_ptr(ft)
 {
 	return ;
 }

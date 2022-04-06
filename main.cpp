@@ -19,15 +19,17 @@ void	size_test( void )
 
 int	main( void )
 {
+	TestRunner	runner;
+
 	TestSuite	suite1("suite1");
 	TestSuite	suite2("suite2");
 
 	TestSuite::add(suite1);
 	TestSuite::add(suite2);
-	TestSuite::print();
 
 	TestCase test1("size test", size_test);
 	suite1.add(test1);
-	suite1.run();
+	
+	runner.run_all();
 
 }

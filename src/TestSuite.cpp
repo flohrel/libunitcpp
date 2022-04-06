@@ -8,11 +8,11 @@ TestSuite::TestSuite( void )
 { return ; }
 
 TestSuite::TestSuite( const TestSuite& src )
-: TestUnit(src), _suite(src._suite)
+: TestUnit(t_suite, src.name), suite(src.suite)
 { return ; }
 
-TestSuite::TestSuite( const std::string& str )
-: TestUnit(str)
+TestSuite::TestSuite( const std::string& str, unsigned time = 0, unsigned nb_fail = 0 )
+: TestUnit(t_suite, str, time, nb_fail)
 { return ; }
 
 TestSuite::~TestSuite( void )
@@ -24,33 +24,15 @@ TestSuite::operator=( const TestSuite& rhs )
 	if (this != &rhs)
 	{
 		TestUnit::operator=(rhs);
-		this->_suite = rhs._suite;
+		this->suite = rhs.suite;
 	}
 	return (*this);
 }
 
 void
 TestSuite::add( TestCase& tc )
-{ _suite.push_back(tc); }
+{ suite.push_back(tc); }
 
 void
 TestSuite::add( TestSuite& new_suite )
 { suite_list.push_back(new_suite); }
-
-void
-TestSuite::run( void )
-{
-	for (TestSuite::tcase_iter it = _suite.begin(); it != _suite.end(); it++)
-	{
-		(*it)();
-	}
-}
-
-void
-TestSuite::print( void )
-{
-	for (TestSuite::suite_iter it = suite_list.begin(); it != suite_list.end(); it++)
-	{
-		std::cout << (*it).get_name() << std::endl; 
-	}
-}

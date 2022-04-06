@@ -2,19 +2,24 @@
 # define __TESTUNIT__H__
 
 # include <string>
+# include "TestRunner.hpp"
+
+enum t_unit_type { t_case = 0x01, t_suite = 0x10, t_any = 0x11 };
 
 class TestUnit
 {
 	private:
-		std::string		_name;
-		unsigned		_timeout;
-		unsigned		_expected_failures;
+		t_unit_type		_type;
 
 
 	public:
+		std::string		name;
+		unsigned		timeout;
+		unsigned		expected_failures;
+
 		TestUnit( void );
 		TestUnit( const TestUnit& src );
-		TestUnit( const std::string& name );
+		TestUnit( t_unit_type ut, const std::string& n, unsigned t = 0, unsigned ex = 0 );
 		~TestUnit( void );
 
 		TestUnit&

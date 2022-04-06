@@ -4,11 +4,11 @@ TestUnit::TestUnit( void )
 { return ; }
 
 TestUnit::TestUnit( const TestUnit& src )
-: _name(src._name), _timeout(src._timeout), _expected_failures(src._expected_failures)
+: _type(src._type), name(src.name), timeout(src.timeout), expected_failures(src.expected_failures)
 { return ; }
 
-TestUnit::TestUnit( const std::string& name )
-: _name(name)
+TestUnit::TestUnit( t_unit_type ut, const std::string& n, unsigned t = 0, unsigned ex = 0 )
+: _type(ut), name(n), timeout(t), expected_failures(ex)
 { return ; }
 
 TestUnit::~TestUnit( void )
@@ -19,13 +19,13 @@ TestUnit::operator=( const TestUnit& rhs )
 {
 	if (this != &rhs)
 	{
-		this->_name = rhs._name;
-		this->_timeout = rhs._timeout;
-		this->_expected_failures = rhs._expected_failures;
+		this->name = rhs.name;
+		this->timeout = rhs.timeout;
+		this->expected_failures = rhs.expected_failures;
 	}
 	return (*this);
 }
 
 std::string
 TestUnit::get_name( void ) const
-{ return (this->_name); }
+{ return (this->name); }

@@ -4,5 +4,6 @@
 # include <cstdlib>
 # include <cassert>
 # include "TestSuite.hpp"
+# include "TestRunner.hpp"
 
 #endif
