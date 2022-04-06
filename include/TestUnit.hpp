@@ -5,6 +5,12 @@
 
 class TestUnit
 {
+	private:
+		std::string		_name;
+		unsigned		_timeout;
+		unsigned		_expected_failures;
+
+
 	public:
 		TestUnit( void );
 		TestUnit( const TestUnit& src );
@@ -17,10 +23,6 @@ class TestUnit
 		std::string
 		get_name( void ) const;
 
-	private:
-		std::string		_name;
-		unsigned		_timeout;
-		unsigned		_expected_failures;
 
 };
 
