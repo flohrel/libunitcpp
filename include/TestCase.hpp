@@ -3,6 +3,9 @@
 
 # include "TestUnit.hpp"
 
+namespace unit_test
+{
+
 class TestCase : public TestUnit
 {
 	public:
@@ -27,5 +30,7 @@ class TestCase : public TestUnit
 
 
 };
+
+}	// namespace unit_test
 
 #endif

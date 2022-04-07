@@ -1,9 +1,12 @@
 #include "TestCase.hpp"
 
+namespace unit_test
+{
+
 TestCase::TestCase( void )
 { return ; }
 
-TestCase::TestCase( const std::string& str, test_ft ft, unsigned time = 0, unsigned nb_fail = 0 )
+TestCase::TestCase( const std::string& str, test_ft ft, unsigned time, unsigned nb_fail )
 : TestUnit(t_case, str, time, nb_fail), _ft_ptr(ft)
 {
 	return ;
@@ -31,3 +34,5 @@ void		TestCase::operator()( void ) const
 	_ft_ptr();
 	return ;
 }
+
+}	// namespace unit_test

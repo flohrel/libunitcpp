@@ -1,11 +1,20 @@
 #ifndef __TESTRUNNER__H__
 # define __TESTRUNNER__H__
 
+# include <cstdio>
+# include <cstdlib>
+# include <cerrno>
+# include <iostream>
+# include <string.h>
+# include <sys/types.h>
 # include <sys/time.h>
 # include <sys/wait.h>
 # include <unistd.h>
 # include "TestSuite.hpp"
 # include "TestCase.hpp"
+
+namespace unit_test
+{
 
 class TestRunner
 {
@@ -15,16 +24,18 @@ class TestRunner
 
 		struct chrono
 		{
-			clock_t		start;
-			clock_t		end;
+			clock_t		s;
+			clock_t		e;
 
-			chrono() : start(0), end(0) { }
+			chrono() : s(0), e(0) { }
 			~chrono() { }
-			void chrono_start() { start = clock(); }
-			void chrono_end() { end = clock(); }
-			float get_execution_time() { return (((float)(end - start) * 1000) / CLOCKS_PER_SEC); }
+			void start() { s = clock(); }
+			void end() { e = clock(); }
+			float get_execution_time() { return (((float)(e - s) * 1000) / CLOCKS_PER_SEC); }
 		};
 
+	private:
+		chrono	_chrono;
 
 	public:
 		TestRunner( void );
@@ -45,5 +56,7 @@ class TestRunner
 
 
 };
+
+}	// namespace unit_test
 
 #endif

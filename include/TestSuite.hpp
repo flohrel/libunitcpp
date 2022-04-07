@@ -6,11 +6,17 @@
 # include "TestUnit.hpp"
 # include "TestCase.hpp"
 
+namespace unit_test
+{
+
+typedef std::list< TestSuite >		master_suite_t;
+
+static master_suite_t*				master_suite;
+
 class TestSuite : public TestUnit
 {
 	public:
-		std::list< TestCase >				suite;
-		static std::list< TestSuite >		suite_list;
+		std::list< TestUnit >				suite;
 
 
 	public:
@@ -21,13 +27,15 @@ class TestSuite : public TestUnit
 
 		TestSuite&	operator=( const TestSuite& rhs );
 
-		static void
-		add( TestSuite& new_suite );
-
 		void
 		add( TestCase& tc );
 
 
 };
+
+static master_suite_t*
+get_master_suite( void );
+
+}	// namespace unit_test
 
 #endif

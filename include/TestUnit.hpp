@@ -2,7 +2,9 @@
 # define __TESTUNIT__H__
 
 # include <string>
-# include "TestRunner.hpp"
+
+namespace unit_test
+{
 
 enum t_unit_type { t_case = 0x01, t_suite = 0x10, t_any = 0x11 };
 
@@ -30,5 +32,7 @@ class TestUnit
 
 
 };
+
+}	// namespace unit_test
 
 #endif
