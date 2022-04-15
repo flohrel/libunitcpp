@@ -1,17 +1,13 @@
 #ifndef __TESTSUITE__H__
 # define __TESTSUITE__H__
 
-# include <list>
 # include <string>
+# include "../utility/Singleton.hpp"
 # include "TestUnit.hpp"
 # include "TestCase.hpp"
 
 namespace unit_test
 {
-
-typedef std::list< TestSuite >		master_suite_t;
-
-static master_suite_t*				master_suite;
 
 class TestSuite : public TestUnit
 {
@@ -22,19 +18,24 @@ class TestSuite : public TestUnit
 	public:
 		TestSuite( void );
 		TestSuite( const TestSuite& src );
-		TestSuite( const std::string& name, unsigned t = 0, unsigned ex = 0 );
+		TestSuite( const std::string& name, unsigned timeout = 0, unsigned expected_fail = 0 );
 		~TestSuite( void );
 
 		TestSuite&	operator=( const TestSuite& rhs );
 
 		void
-		add( TestCase& tc );
+		add( TestUnit& tc );
 
 
 };
 
-static master_suite_t*
-get_master_suite( void );
+class MasterSuite : public Singleton< TestSuite >
+{
+	friend TestSuite&	Singleton<TestSuite>::instance();
+
+	private:
+		MasterSuite( void ) { return ; }
+};
 
 }	// namespace unit_test
 

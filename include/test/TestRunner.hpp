@@ -19,8 +19,9 @@ namespace unit_test
 class TestRunner
 {
 	public:
-		typedef std::list<TestSuite>::const_iterator	suite_iter;
-		typedef std::list<TestCase>::const_iterator		tcase_iter;
+		typedef std::list<TestUnit>::iterator		unit_iter;
+		typedef std::list<TestSuite>::iterator		suite_iter;
+		typedef std::list<TestCase>::iterator		tcase_iter;
 
 		struct chrono
 		{
@@ -49,10 +50,10 @@ class TestRunner
 		run_all( void );
 
 		void
-		run_suite( const TestSuite& unit );
+		run_suite( TestSuite& unit );
 
 		void
-		run_test( const TestCase& unit );
+		run_test( TestCase& unit );
 
 
 };

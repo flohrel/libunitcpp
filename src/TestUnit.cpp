@@ -1,4 +1,5 @@
-#include "TestUnit.hpp"
+#include "test/TestUnit.hpp"
+
 namespace unit_test
 {
 
@@ -9,7 +10,7 @@ TestUnit::TestUnit( const TestUnit& src )
 : _type(src._type), name(src.name), timeout(src.timeout), expected_failures(src.expected_failures)
 { return ; }
 
-TestUnit::TestUnit( t_unit_type ut, const std::string& n, unsigned t, unsigned ex )
+TestUnit::TestUnit( e_unit_type ut, const std::string& n, unsigned t, unsigned ex )
 : _type(ut), name(n), timeout(t), expected_failures(ex)
 { return ; }
 
@@ -28,8 +29,9 @@ TestUnit::operator=( const TestUnit& rhs )
 	return (*this);
 }
 
-std::string
-TestUnit::get_name( void ) const
-{ return (this->name); }
+e_unit_type
+TestUnit::get_type( void ) const
+{ return (this->_type); }
+
 
 }	// namespace unit_test

@@ -1,4 +1,4 @@
-#include "TestRunner.hpp"
+#include "test/TestRunner.hpp"
 
 namespace unit_test
 {
@@ -27,7 +27,7 @@ TestRunner::operator=( const TestRunner& rhs )
 }
 
 void
-TestRunner::run_test( const TestCase& unit )
+TestRunner::run_test( TestCase& unit )
 {
 	pid_t	pid;
 
@@ -48,33 +48,40 @@ TestRunner::run_test( const TestCase& unit )
 }
 
 void
-TestRunner::run_suite( const TestSuite& unit )
+TestRunner::run_suite( TestSuite& unit )
 {
-	TestRunner::tcase_iter current = unit.suite.begin();
-	TestRunner::tcase_iter end = unit.suite.end();
+	TestRunner::unit_iter current = unit.suite.begin();
+	TestRunner::unit_iter end = unit.suite.end();
 	int32_t	status;
 
 	std::cout << unit.suite.size() << std::endl;
 	for (; current != end; current++)
 	{
-		run_test(*current);
+		TestCase *curr_tc = static_cast<TestCase *>(&(*current));
+		run_test(*curr_tc);
 		wait(&status);
 		_chrono.end();
 		std::cout << _chrono.get_execution_time() << "ms" << std::endl;
 	}
-
 }
 
 void
 TestRunner::run_all( void )
 {
-
-	std::list<TestSuite>::iterator current = master_suite->begin();
-	std::list<TestSuite>::iterator end = master_suite->end();
+	TestRunner::unit_iter current = MasterSuite::instance().suite.begin();
+	TestRunner::unit_iter end = MasterSuite::instance().suite.end();
 
 	for (; current != end; current++)
 	{
-		run_suite(*current);
+		if ((*current).get_type() == t_suite)
+		{
+			TestSuite *curr_ts = static_cast<TestSuite *>(&(*current));
+			run_suite(*curr_ts);
+		}
+		else
+		{
+			run_test(*static_cast<TestCase *>(&(*current)));
+		}
 	}
 }
 

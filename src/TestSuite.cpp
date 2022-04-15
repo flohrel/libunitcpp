@@ -1,4 +1,4 @@
-#include "TestSuite.hpp"
+#include "test/TestSuite.hpp"
 
 namespace unit_test
 {
@@ -30,16 +30,8 @@ TestSuite::operator=( const TestSuite& rhs )
 }
 
 void
-TestSuite::add( TestCase& tc )
+TestSuite::add( TestUnit& tc )
 { suite.push_back(tc); }
-
-master_suite_t*
-get_master_suite( void )
-{
-	if (master_suite == NULL)
-		master_suite = new master_suite_t();
-	return (master_suite);
-}
 
 
 }	// namespace unit_test

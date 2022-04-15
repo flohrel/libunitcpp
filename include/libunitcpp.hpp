@@ -3,7 +3,8 @@
 
 # include <cstdlib>
 # include <cassert>
-# include "TestSuite.hpp"
-# include "TestRunner.hpp"
+# include "utility/Singleton.hpp"
+# include "test/TestSuite.hpp"
+# include "test/TestRunner.hpp"
 
 #endif

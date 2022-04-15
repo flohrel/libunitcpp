@@ -4,18 +4,17 @@
 
 NAME		=	runner
 
-VPATH		=	src
+VPATH		=	src ./
 INCLDIR		=	include
 BUILDIR		=	build
 TESTDIR		=	
 DEPDIR		=	$(BUILDIR)/.deps
 
-TEST		=	main.cpp
 SRC			=	TestUnit.cpp \
 				TestSuite.cpp \
 				TestCase.cpp \
-				TestRunner.cpp
-SRC			+=	$(TEST)
+				TestRunner.cpp \
+				main.cpp
 OBJ			=	$(SRC:%.cpp=$(BUILDIR)/%.o)
 DEP			=	$(SRC:%.cpp=$(DEPDIR)/%.d)
 
