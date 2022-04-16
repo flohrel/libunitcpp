@@ -1,9 +1,11 @@
 #ifndef __RESULTCOLLECTOR__H__
 # define __RESULTCOLLECTOR__H__
 
-# include "test/TestUnit.hpp"
-# include "test/TestCase.hpp"
-# include "test/TestSuite.hpp"
+# include <sys/wait.h>
+# include <cstdlib>
+# include <csignal>
+# include <ctime>
+# include "TestUnit.hpp"
 
 namespace unit_test
 {
@@ -32,8 +34,11 @@ class ResultCollector
 		ResultCollector&
 		operator=( const ResultCollector& rhs );
 
-		static int
-		get_exit_status( int status, TestCase& test, TestSuite& suite );
+		void
+		get_results( void );
+		
+		void
+		get_exit_status( int status );
 
 
 	public:

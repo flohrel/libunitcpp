@@ -3,7 +3,6 @@
 
 # include <list>
 # include <string>
-# include "ResultCollector.hpp"
 
 namespace unit_test
 {
@@ -20,8 +19,6 @@ class TestUnit
 		std::string		name;
 		unsigned		timeout;
 		unsigned		expected_failures;
-
-		ResultCollector	results;
 
 		TestUnit( void );
 		TestUnit( const TestUnit& src );

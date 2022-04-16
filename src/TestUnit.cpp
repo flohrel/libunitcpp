@@ -7,11 +7,11 @@ TestUnit::TestUnit( void )
 { return ; }
 
 TestUnit::TestUnit( const TestUnit& src )
-: _type(src._type), name(src.name), timeout(src.timeout), expected_failures(src.expected_failures), results(src.results)
+: _type(src._type), name(src.name), timeout(src.timeout), expected_failures(src.expected_failures)
 { return ; }
 
 TestUnit::TestUnit( e_unit_type ut, const std::string& n, unsigned t, unsigned ex )
-: _type(ut), name(n), timeout(t), expected_failures(ex), results(ResultCollector())
+: _type(ut), name(n), timeout(t), expected_failures(ex)
 { return ; }
 
 TestUnit::~TestUnit( void )

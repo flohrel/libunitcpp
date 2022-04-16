@@ -1,4 +1,4 @@
-# include "ResultCollector.hpp"
+# include "test/ResultCollector.hpp"
 
 namespace unit_test
 {
@@ -24,29 +24,42 @@ ResultCollector::operator=( const ResultCollector& rhs )
 	return (*this);
 }
 
-int
-get_exit_status( int status, TestCase& test, TestSuite& suite )
+void
+ResultCollector::get_results( void )
+{
+	int32_t	status;
+	chrono	chrono;
+
+	chrono.start();
+	wait(&status);
+	chrono.end();
+	duration_milliseconds = chrono.get_execution_time();
+	get_exit_status(status);
+}
+
+void
+ResultCollector::get_exit_status( int status )
 {
 	if (WIFEXITED(status) == true)
 	{
-		test.results.exit_status = WEXITSTATUS(status);
-		if (test.results.exit_status == EXIT_SUCCESS)
-			suite.results.test_cases_passed++;
+		exit_status = WEXITSTATUS(status);
+		if (exit_status == EXIT_SUCCESS)
+			test_cases_passed++;
 		else
-			suite.results.test_cases_failed++;
+			test_cases_failed++;
 	}
 	else if (WIFSIGNALED(status))
 	{
-		test.results.signal = WTERMSIG(signal);
-		if (test.results.signal == SIGALRM)
+		signal = WTERMSIG(status);
+		if (signal == SIGALRM)
 		{
-			test.results.timed_out = true;
-			suite.results.test_cases_timed_out++;
+			timed_out = true;
+			test_cases_timed_out++;
 		}
 		else
 		{
-			test.results.aborted = true;
-			suite.results.test_cases_aborted++;
+			aborted = true;
+			test_cases_aborted++;
 		}
 	}
 /*
