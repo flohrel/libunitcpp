@@ -62,10 +62,6 @@ ResultCollector::get_exit_status( int status )
 			test_cases_aborted++;
 		}
 	}
-/*
-	else
-		UNKNOWN ERROR
-*/
 }
 
 }
