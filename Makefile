@@ -2,27 +2,27 @@
 ## Variables ##
 ###############
 
-NAME		=	runner
+NAME		=	cpplibunit.a
 
-VPATH		=	src ./
+VPATH		=	src
 INCLDIR		=	include
 BUILDIR		=	build
-TESTDIR		=	
 DEPDIR		=	$(BUILDIR)/.deps
 
 SRC			=	TestUnit.cpp \
 				TestSuite.cpp \
 				TestCase.cpp \
 				TestRunner.cpp \
-				ResultCollector.cpp \
-				main.cpp
+				ResultCollector.cpp
 OBJ			=	$(SRC:%.cpp=$(BUILDIR)/%.o)
 DEP			=	$(SRC:%.cpp=$(DEPDIR)/%.d)
 
-CXX			=	clang++
+CXX			=	c++
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
 CPPFLAGS	:=	-I./$(INCLDIR) -I./$(TESTDIR)
 DEPFLAGS	=	-MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+AR			=	ar
+ARFLAGS		=	rcs
 RM			=	/bin/rm -rf
 UNAME		:=	$(shell uname -s)
 
@@ -45,15 +45,15 @@ DELETE		=	\033[2K
 
 all:			$(NAME)
 
-$(BUILDIR)/%.o:	%.cpp | $(DEPDIR)
+$(BUILDIR)/%.o:	$(SRC) | $(DEPDIR)
 				@printf "$(YELLOW)Compiling $@ and generating/checking make dependency file...$(DEFAULT)"
 				@$(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
 				@printf "$(DELETE)\r$(GREEN)$@ compiled$(DEFAULT)\n"
 
 $(NAME):		$(OBJ)
-				@printf "$(YELLOW)Linking source files and generating $@ binary...$(DEFAULT)"
-				@$(CXX) $(CXXFLAGS) -o $@ $(CPPFLAGS) $^
-				@printf "$(DELETE)\r$(GREEN)$@ binary generated$(DEFAULT)\n"
+				@printf "$(YELLOW)Linking source files and generating $@ library...$(DEFAULT)"
+				@$(AR) $(ARFLAGS) $@ $^
+				@printf "$(DELETE)\r$(GREEN)$@ library generated$(DEFAULT)\n"
 
 $(DEPDIR):
 				@printf "$(YELLOW)Creating $@ folder...$(DEFAULT)"
@@ -61,9 +61,6 @@ $(DEPDIR):
 				@printf "$(DELETE)\r$(GREEN)$@ created$(DEFAULT)\n"
 $(DEP):
 -include $(wildcard $(DEP))
-
-bonus:
-				@make all
 
 clean:
 				@printf "$(YELLOW)Deleting object and dependency files...$(DEFAULT)"
