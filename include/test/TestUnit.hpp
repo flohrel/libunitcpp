@@ -3,11 +3,11 @@
 
 # include <list>
 # include <string>
+# include "ResultCollector.hpp"
 
 namespace unit_test
 {
 
-// unit type
 enum e_unit_type { t_case = 0x01, t_suite = 0x10, t_any = 0x11 };
 
 class TestUnit
@@ -20,6 +20,8 @@ class TestUnit
 		std::string		name;
 		unsigned		timeout;
 		unsigned		expected_failures;
+
+		ResultCollector	results;
 
 		TestUnit( void );
 		TestUnit( const TestUnit& src );

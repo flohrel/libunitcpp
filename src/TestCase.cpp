@@ -1,5 +1,5 @@
 #include "test/TestCase.hpp"
-
+#include <iostream>
 namespace unit_test
 {
 
@@ -8,24 +8,22 @@ TestCase::TestCase( void )
 
 TestCase::TestCase( const std::string& str, test_ft ft, unsigned time, unsigned nb_fail )
 : TestUnit(t_case, str, time, nb_fail), _ft_ptr(ft)
-{
-	return ;
-}
+{ return ; }
 
 TestCase::TestCase( const TestCase& src )
 : TestUnit(src), _ft_ptr(src._ft_ptr)
-{
-	return ;
-}
+{ return ; }
 
 TestCase::~TestCase( void )
-{
-	return;
-}
+{ return ; }
 
 TestCase&	TestCase::operator=( const TestCase& rhs )
 {
-	(void)rhs;
+	if (this != &rhs)
+	{
+		TestUnit::operator=(rhs);
+		_ft_ptr = rhs._ft_ptr;
+	}
 	return (*this);
 }
 

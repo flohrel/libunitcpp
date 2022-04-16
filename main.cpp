@@ -21,14 +21,14 @@ int	main( void )
 {
 	unit_test::TestRunner	runner;
 
+	unit_test::TestCase		test1("size test", size_test);
 	unit_test::TestSuite	suite1("suite1");
+	suite1.push_back(test1);
 	unit_test::TestSuite	suite2("suite2");
 
-	unit_test::MasterSuite::instance().add(suite1);
-	unit_test::MasterSuite::instance().add(suite2);
+	unit_test::MasterSuite::instance().push_back(suite1);
+	unit_test::MasterSuite::instance().push_back(suite2);
 
-	unit_test::TestCase		test1("size test", size_test);
-	suite1.add(test1);
 	
 	runner.run_all();
 	return (0);

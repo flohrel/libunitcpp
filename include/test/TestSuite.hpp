@@ -9,12 +9,8 @@
 namespace unit_test
 {
 
-class TestSuite : public TestUnit
+class TestSuite : public TestUnit, public std::list<TestCase>
 {
-	public:
-		std::list< TestUnit >				suite;
-
-
 	public:
 		TestSuite( void );
 		TestSuite( const TestSuite& src );
@@ -23,15 +19,12 @@ class TestSuite : public TestUnit
 
 		TestSuite&	operator=( const TestSuite& rhs );
 
-		void
-		add( TestUnit& tc );
-
 
 };
 
-class MasterSuite : public Singleton< TestSuite >
+class MasterSuite : public Singleton< std::list<TestSuite> >
 {
-	friend TestSuite&	Singleton<TestSuite>::instance();
+	friend std::list<TestSuite>&	Singleton<std::list<TestSuite> >::instance();
 
 	private:
 		MasterSuite( void ) { return ; }

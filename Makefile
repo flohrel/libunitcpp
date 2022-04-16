@@ -14,6 +14,7 @@ SRC			=	TestUnit.cpp \
 				TestSuite.cpp \
 				TestCase.cpp \
 				TestRunner.cpp \
+				ResultCollector.cpp \
 				main.cpp
 OBJ			=	$(SRC:%.cpp=$(BUILDIR)/%.o)
 DEP			=	$(SRC:%.cpp=$(DEPDIR)/%.d)

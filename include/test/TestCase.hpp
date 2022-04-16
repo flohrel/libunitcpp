@@ -17,7 +17,7 @@ class TestCase : public TestUnit
 
 
 	public:
-		TestCase( const std::string& str, test_ft ft, unsigned t = 0, unsigned ex = 0 );
+		TestCase( const std::string& str, test_ft ft, unsigned timeout = 0, unsigned expected_fail = 0 );
 		TestCase( const TestCase& src );
 		~TestCase( void );
 

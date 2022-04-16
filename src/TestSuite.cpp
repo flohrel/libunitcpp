@@ -4,15 +4,15 @@ namespace unit_test
 {
 
 TestSuite::TestSuite( void )
-: TestUnit()
+: TestUnit(), std::list<TestCase>()
 { return ; }
 
 TestSuite::TestSuite( const TestSuite& src )
-: TestUnit(t_suite, src.name), suite(src.suite)
+: TestUnit(t_suite, src.name), std::list<TestCase>(src)
 { return ; }
 
 TestSuite::TestSuite( const std::string& str, unsigned time, unsigned nb_fail )
-: TestUnit(t_suite, str, time, nb_fail)
+: TestUnit(t_suite, str, time, nb_fail), std::list<TestCase>()
 { return ; }
 
 TestSuite::~TestSuite( void )
@@ -24,14 +24,10 @@ TestSuite::operator=( const TestSuite& rhs )
 	if (this != &rhs)
 	{
 		TestUnit::operator=(rhs);
-		this->suite = rhs.suite;
+		std::list<TestCase>::operator=(rhs);
 	}
 	return (*this);
 }
-
-void
-TestSuite::add( TestUnit& tc )
-{ suite.push_back(tc); }
 
 
 }	// namespace unit_test

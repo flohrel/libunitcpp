@@ -1,5 +1,5 @@
 #include "test/TestUnit.hpp"
-
+#include <iostream>
 namespace unit_test
 {
 
@@ -7,11 +7,11 @@ TestUnit::TestUnit( void )
 { return ; }
 
 TestUnit::TestUnit( const TestUnit& src )
-: _type(src._type), name(src.name), timeout(src.timeout), expected_failures(src.expected_failures)
+: _type(src._type), name(src.name), timeout(src.timeout), expected_failures(src.expected_failures), results(src.results)
 { return ; }
 
 TestUnit::TestUnit( e_unit_type ut, const std::string& n, unsigned t, unsigned ex )
-: _type(ut), name(n), timeout(t), expected_failures(ex)
+: _type(ut), name(n), timeout(t), expected_failures(ex), results(ResultCollector())
 { return ; }
 
 TestUnit::~TestUnit( void )

@@ -27,7 +27,7 @@ TestRunner::operator=( const TestRunner& rhs )
 }
 
 void
-TestRunner::run_test( TestCase& unit )
+TestRunner::run_test( TestCase& test )
 {
 	pid_t	pid;
 
@@ -39,50 +39,48 @@ TestRunner::run_test( TestCase& unit )
 	}
 	else if (pid == 0)
 	{
-		unit();
-	}
-	else
-	{
-		_chrono.start();
+		test();
+		alarm(test.timeout);
+		exit(EXIT_SUCCESS);
 	}
 }
 
 void
-TestRunner::run_suite( TestSuite& unit )
+TestRunner::print_suite_results( TestSuite& suite )
 {
-	TestRunner::unit_iter current = unit.suite.begin();
-	TestRunner::unit_iter end = unit.suite.end();
-	int32_t	status;
+	std::cout << std::endl;
+	std::cout << "===> " << std::endl;
+}
 
-	std::cout << unit.suite.size() << std::endl;
-	for (; current != end; current++)
+void
+TestRunner::get_results( TestCase& test, TestSuite& suite )
+{
+	int32_t	status;
+	chrono	chrono;
+
+	chrono.start();
+	wait(&status);
+	chrono.end();
+	test.results.duration_milliseconds = chrono.get_execution_time();
+	ResultCollector::get_exit_status(status, test, suite);
+}
+
+void
+TestRunner::run_suite( TestSuite& suite )
+{
+	std::cout << "Running " << GRN << suite.size() << RESET << " tests..." << std::endl;
+	for (TestSuite::iterator it = suite.begin(); it != suite.end(); it++)
 	{
-		TestCase *curr_tc = static_cast<TestCase *>(&(*current));
-		run_test(*curr_tc);
-		wait(&status);
-		_chrono.end();
-		std::cout << _chrono.get_execution_time() << "ms" << std::endl;
+		run_test(*it);
+		get_results(*it, suite);
 	}
+	print_suite_results(suite);
 }
 
 void
 TestRunner::run_all( void )
 {
-	TestRunner::unit_iter current = MasterSuite::instance().suite.begin();
-	TestRunner::unit_iter end = MasterSuite::instance().suite.end();
-
-	for (; current != end; current++)
-	{
-		if ((*current).get_type() == t_suite)
-		{
-			TestSuite *curr_ts = static_cast<TestSuite *>(&(*current));
-			run_suite(*curr_ts);
-		}
-		else
-		{
-			run_test(*static_cast<TestCase *>(&(*current)));
-		}
-	}
+	std::for_each(MasterSuite::instance().begin(), MasterSuite::instance().end(), run_suite);
 }
 
 }	// namespace unit_test

@@ -1,6 +1,7 @@
 #ifndef __TESTRUNNER__H__
 # define __TESTRUNNER__H__
 
+# include <algorithm>
 # include <cstdio>
 # include <cstdlib>
 # include <cerrno>
@@ -12,32 +13,13 @@
 # include <unistd.h>
 # include "TestSuite.hpp"
 # include "TestCase.hpp"
+# include "ansi_colors.hpp"
 
 namespace unit_test
 {
 
 class TestRunner
 {
-	public:
-		typedef std::list<TestUnit>::iterator		unit_iter;
-		typedef std::list<TestSuite>::iterator		suite_iter;
-		typedef std::list<TestCase>::iterator		tcase_iter;
-
-		struct chrono
-		{
-			clock_t		s;
-			clock_t		e;
-
-			chrono() : s(0), e(0) { }
-			~chrono() { }
-			void start() { s = clock(); }
-			void end() { e = clock(); }
-			float get_execution_time() { return (((float)(e - s) * 1000) / CLOCKS_PER_SEC); }
-		};
-
-	private:
-		chrono	_chrono;
-
 	public:
 		TestRunner( void );
 		TestRunner( const TestRunner& src );
@@ -54,6 +36,12 @@ class TestRunner
 
 		void
 		run_test( TestCase& unit );
+
+		void
+		get_results( TestCase& test, TestSuite& suite );
+
+		void
+		print_suite_results( TestSuite& suite );
 
 
 };
