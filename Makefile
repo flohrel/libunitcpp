@@ -2,7 +2,7 @@
 ## Variables ##
 ###############
 
-NAME		=	cpplibunit.a
+NAME		=	libunitcpp.a
 
 VPATH		=	src
 INCLDIR		=	include
@@ -19,13 +19,14 @@ DEP			=	$(SRC:%.cpp=$(DEPDIR)/%.d)
 
 CXX			=	c++
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
-CPPFLAGS	:=	-I./$(INCLDIR) -I./$(TESTDIR)
+CPPFLAGS	:=	-I./$(INCLDIR)
 DEPFLAGS	=	-MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 AR			=	ar
 ARFLAGS		=	rcs
 RM			=	/bin/rm -rf
 UNAME		:=	$(shell uname -s)
 
+# FG COLORS
 DEFAULT		=	\033[0m
 BLACK		=	\033[1;30m
 RED			=	\033[1;31m
@@ -35,7 +36,16 @@ BLUE		=	\033[1;34m
 MAGENTA 	=	\033[1;35m
 CYAN 		=	\033[1;36m
 WHITE 		=	\033[1;107m
+
+# TERMCAPS
+UP			=	\033[1A
 DELETE		=	\033[2K
+DELPREV		=	$(UP)$(DELETE)\r
+
+# EMOJI
+CHECK		=	\xE2\x9C\x94
+CROSS		=	\xE2\x9D\x8C
+
 
 ###########
 ## Rules ##
@@ -43,34 +53,37 @@ DELETE		=	\033[2K
 
 .PHONY:			all bonus clean fclean re verbose
 
-all:			$(NAME)
+all:			header $(NAME)
 
 $(BUILDIR)/%.o:	$(SRC) | $(DEPDIR)
-				@printf "$(YELLOW)Compiling $@ and generating/checking make dependency file...$(DEFAULT)"
+				@printf "$(YELLOW)Compiling $@ and generating/checking make dependency file...$(DEFAULT)\n"
 				@$(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
-				@printf "$(DELETE)\r$(GREEN)$@ compiled$(DEFAULT)\n"
+				@printf "$(DELPREV)%-25s%*s$(GREEN)$(CHECK)$(DEFAULT)\n" $@ $(shell printf $(NAME) | wc -c)
 
 $(NAME):		$(OBJ)
-				@printf "$(YELLOW)Linking source files and generating $@ library...$(DEFAULT)"
+				@printf "$(YELLOW)Generating $@...$(DEFAULT)\n"
 				@$(AR) $(ARFLAGS) $@ $^
-				@printf "$(DELETE)\r$(GREEN)$@ library generated$(DEFAULT)\n"
+				@printf "$(DELPREV)$(GREEN)Library generated$(DEFAULT)\n"
 
 $(DEPDIR):
-				@printf "$(YELLOW)Creating $@ folder...$(DEFAULT)"
+				@printf "$(YELLOW)Creating $@ folder...$(DEFAULT)\n"
 				@mkdir -p $@
-				@printf "$(DELETE)\r$(GREEN)$@ created$(DEFAULT)\n"
+				@printf "$(DELPREV)"
 $(DEP):
 -include $(wildcard $(DEP))
 
+header:
+				@printf "**********%3$1s$(BLUE)$(NAME)$(DEFAULT)%3$1s**********\n" ""
+
 clean:
-				@printf "$(YELLOW)Deleting object and dependency files...$(DEFAULT)"
+				@printf "$(YELLOW)Deleting object and dependency files...$(DEFAULT)\n"
 				@$(RM) $(OBJ)
-				@printf "$(DELETE)\r$(GREEN)Build files deleted$(DEFAULT)\n"
+				@printf "$(DELPREV)Build files deleted\n"
 
 fclean:			clean
-				@printf "$(YELLOW)Deleting build directory and binary...$(DEFAULT)"
+				@printf "$(YELLOW)Deleting build directory and library...$(DEFAULT)\n"
 				@$(RM) $(NAME) $(BUILDIR)
-				@printf "$(DELETE)\r$(GREEN)Build directory and binary deleted$(DEFAULT)\n"
+				@printf "$(DELPREV)Build directory and library deleted\n"
 
 re:				fclean
 				@make -s all

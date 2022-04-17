@@ -101,7 +101,6 @@ TestRunner::run_all( void )
 	chrono.end();
 	results.duration_milliseconds = chrono.get_execution_time();
 	std::cout << std::endl << "Total elapsed time: " << results.duration_milliseconds << "ms" << std::endl;
-
 }
 
 }	// namespace unit_test
