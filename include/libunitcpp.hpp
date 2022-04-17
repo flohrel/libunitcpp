@@ -1,5 +1,5 @@
-#ifndef __CPPLIBUNIT__H__
-# define __CPPLIBUNIT__H__
+#ifndef __LIBUNITCPP__H__
+# define __LIBUNITCPP__H__
 
 # include <cstdlib>
 # include <cassert>

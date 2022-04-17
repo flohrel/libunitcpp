@@ -51,11 +51,11 @@ CROSS		=	\xE2\x9D\x8C
 ## Rules ##
 ###########
 
-.PHONY:			all bonus clean fclean re verbose
+.PHONY:			all bonus clean fclean header re verbose
 
 all:			header $(NAME)
 
-$(BUILDIR)/%.o:	$(SRC) | $(DEPDIR)
+$(BUILDIR)/%.o:	%.cpp | $(DEPDIR)
 				@printf "$(YELLOW)Compiling $@ and generating/checking make dependency file...$(DEFAULT)\n"
 				@$(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
 				@printf "$(DELPREV)%-25s%*s$(GREEN)$(CHECK)$(DEFAULT)\n" $@ $(shell printf $(NAME) | wc -c)
