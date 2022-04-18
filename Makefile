@@ -58,7 +58,7 @@ all:			header $(NAME)
 $(BUILDIR)/%.o:	%.cpp | $(DEPDIR)
 				@printf "$(YELLOW)Compiling $@ and generating/checking make dependency file...$(DEFAULT)\n"
 				@$(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
-				@printf "$(DELPREV)%-25s%*s$(GREEN)$(CHECK)$(DEFAULT)\n" $@ $(shell printf $(NAME) | wc -c)
+				@printf "$(DELPREV)%-25s%*s$(GREEN)$(CHECK)$(DEFAULT)\n" $(notdir $@) $(shell printf $(NAME) | wc -c)
 
 $(NAME):		$(OBJ)
 				@printf "$(YELLOW)Generating $@...$(DEFAULT)\n"
