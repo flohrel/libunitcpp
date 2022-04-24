@@ -2,7 +2,7 @@
 # define __TESTSUITE__H__
 
 # include <string>
-# include "../utility/Singleton.hpp"
+# include "utils/Singleton.hpp"
 # include "TestUnit.hpp"
 # include "TestCase.hpp"
 
