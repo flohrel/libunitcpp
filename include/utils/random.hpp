@@ -11,33 +11,43 @@
 # include <unistd.h>
 # include "time.h"
 
+// TODO:
+//		->	Make a generator base class
+//		->	make it EASIER TO USE ( operator() overload ? OR class inheritance to generate with constructor ? )
+
 namespace unit_test {
 
+/**
+ * @brief Generate random values of integral type
+ * 
+ * @tparam T 
+ */
 template< typename T >
-class Random
+class RandomGenerator
 {
 	public:
-		Random( void )
-		: _max_value(std::numeric_limits<T>::max() < RAND_MAX ? std::numeric_limits<T>::max() : RAND_MAX)
-		{
-			srand(time(0) * getpid());
-			return ;
-		}
+		typedef	T		value_type;
 
-		Random( const Random& src )
+		RandomGenerator( void )
+		: _max_value(std::numeric_limits<T>::max() < RAND_MAX ? std::numeric_limits<T>::max() : RAND_MAX)
+		{ srand(time(0) * getpid()); return ; }
+
+		RandomGenerator( const RandomGenerator& src )
 		: _max_value(src._max_value)
 		{ return ; }
 
-		~Random( void )
+		~RandomGenerator( void )
 		{ return ; }
 
-		operator T() const
-		{
-			return (rand() % _max_value);
-		}
+		operator	value_type() const
+		{ return (gen_random()); }
 
-		Random&
-		operator=( const Random& rhs )
+		value_type
+		gen_random( void ) const
+		{ return (rand() % _max_value); }
+
+		RandomGenerator&
+		operator=( const RandomGenerator& rhs )
 		{
 			if (this != &rhs)
 			{
@@ -52,103 +62,141 @@ class Random
 
 };
 
-class RandomString
+/**
+ * @brief Generate random alpha-numeric std::string
+ * 
+ */
+class StringGenerator
 {
 	public:
-		RandomString( size_t size )
-		: _size(size)
-		{
-			srand(time(0) * getpid());
-			return ;
-		}
+		typedef	std::string			value_type;
 
-		RandomString( const RandomString& src )
+		StringGenerator( void )
+		: _size(StringGenerator::_kDefaultSize)
+		{ srand(time(0) * getpid()); return; }
+
+		StringGenerator( size_t size )
+		: _size(size)
+		{ srand(time(0) * getpid()); return ; }
+
+		StringGenerator( const StringGenerator& src )
 		: _size(src._size)
 		{ return ; }
 
-		~RandomString( void )
+		~StringGenerator( void )
 		{ return ; }
 
 		operator	std::string() const
+		{ return (gen_random()); }
+
+		StringGenerator&
+		operator=(StringGenerator const& rhs)
+		{
+			if (this != &rhs)
+			{
+				_size = rhs._size;
+			}
+			return (*this);
+		}
+
+		std::string
+		gen_random( void ) const
 		{
 			static const char alphanum[] =
 				"0123456789"
 				"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 				"abcdefghijklmnopqrstuvwxyz";
 
-			std::string		str;
-			str.reserve(_size);
+			std::string		random_str;
+			random_str.reserve(_size);
 
 			for (size_t i = 0; i != _size; i++)
 			{
-				str += alphanum[rand() % (sizeof(alphanum) - 1)];
+				random_str += alphanum[rand() % (sizeof(alphanum) - 1)];
     		}
-			return (str);
+			return (random_str);
 		}
+
+		void
+		set_size( size_t size )
+		{ _size = size; }
 
 
 	private:
-		RandomString( void )
-		: _size()
-		{ return; }
-
-		size_t	_size;
+		static const size_t		_kDefaultSize = 10;
+		size_t					_size;
 
 };
 
-std::ostream& operator<<(std::ostream& os, RandomString str)
+std::ostream& operator<<(std::ostream& os, StringGenerator str)
 {
 	return (os << static_cast<std::string>(str));
 }
 
-template< typename Key, typename Value, typename Container = std::map<Key, Value> >
-class RandomMap : public Container
+/**
+ * @brief Generate std::map of random values
+ * 
+ * @tparam KeyGen 		Key generator
+ * @tparam ValueGen 	Value generator
+ */
+template< typename KeyGen, typename ValueGen >
+class MapGenerator
 {
 	public:
-		typedef typename Container::iterator	iterator;
+		typedef std::map<typename KeyGen::value_type, typename ValueGen::value_type>		map_type;
 
-		RandomMap( size_t size )
-		: Container()
+		MapGenerator( void )
+		: _size(MapGenerator::_kDefaultSize), _key_gen(), _value_gen()
+		{ return; }
+
+		MapGenerator( size_t size, KeyGen keygen = KeyGen(), ValueGen valgen = ValueGen() )
+		: _size(size), _key_gen(keygen), _value_gen(valgen)
+		{ return ; }
+
+		MapGenerator( const MapGenerator& src )
+		: _size(src._size)
+		{ return ; }
+
+		~MapGenerator( void )
+		{ return ; }
+
+		operator	map_type() const
+		{ return (gen_random()); }
+
+		MapGenerator&
+		operator=(MapGenerator const& rhs)
 		{
-			if (size > Container::max_size())
-				return ;
-			_size = size;
-			gen_random();
-			return ;
+			if (this != &rhs)
+			{
+				_size = rhs._size;
+				_key_gen = rhs._key_gen;
+				_value_gen = rhs._value_gen;
+			}
+			return (*this);
 		}
 
-		RandomMap( const RandomMap& src )
-		: Container(src)
-		{ return ; }
+		map_type
+		gen_random( void ) const
+		{
+			map_type	random_map;
 
-		~RandomMap( void )
-		{ return ; }
+			for (size_t i = 0; i != _size; i++)
+			{
+				random_map.insert(std::make_pair(_key_gen.gen_random(), _value_gen.gen_random()));
+    		}
+			return (random_map);
+		}
 
 		void
 		set_size( size_t size )
-		{
-			if (size > Container::max_size())
-				return ;
-			_size = size;
-			Container::clear();
-			gen_random();
-		}
+		{ _size = size; }
 
-		void
-		gen_random( void )
-		{
-			for (size_t i = 0; i < _size; i++)
-			{
-				Container::insert(std::make_pair(Key(), Value()));
-			}
-		}
 
 	private:
-		RandomMap( void )
-		: Container()
-		{ return; }
-
-		size_t	_size;
+		static const size_t		_kDefaultSize = 10;
+		size_t					_size;
+		KeyGen					_key_gen;
+		ValueGen				_value_gen;
 
 };
 
