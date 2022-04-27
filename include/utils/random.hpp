@@ -139,12 +139,10 @@ class StringGenerator
  * @tparam KeyGen 		Key generator
  * @tparam ValueGen 	Value generator
  */
-template< typename KeyGen, typename ValueGen >
+template< typename KeyGen, typename ValueGen, typename Container = std::map< typename KeyGen::value_type, typename ValueGen::value_type > >
 class MapGenerator
 {
 	public:
-		typedef std::map<typename KeyGen::value_type, typename ValueGen::value_type>		map_type;
-
 		MapGenerator( void )
 		: _size(MapGenerator::_kDefaultSize), _key_gen(), _value_gen()
 		{ return; }
@@ -160,7 +158,7 @@ class MapGenerator
 		~MapGenerator( void )
 		{ return ; }
 
-		operator	map_type() const
+		Container operator()( void ) const
 		{ return (gen_random()); }
 
 		MapGenerator&
@@ -175,10 +173,10 @@ class MapGenerator
 			return (*this);
 		}
 
-		map_type
+		Container
 		gen_random( void ) const
 		{
-			map_type	random_map;
+			Container	random_map;
 
 			for (size_t i = 0; i != _size; i++)
 			{
