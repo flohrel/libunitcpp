@@ -1,5 +1,5 @@
-#ifndef __RANDOM_OBJ__H__
-# define __RANDOM_OBJ__H__
+#ifndef __RANDOM__H__
+# define __RANDOM__H__
 
 # include <iostream>
 # include <string>
@@ -121,17 +121,17 @@ class StringGenerator
 		set_size( size_t size )
 		{ _size = size; }
 
+		friend std::ostream& operator<<(std::ostream& os, StringGenerator str)
+		{
+			return (os << static_cast<std::string>(str));
+		}
+
 
 	private:
 		static const size_t		_kDefaultSize = 10;
 		size_t					_size;
 
 };
-
-std::ostream& operator<<(std::ostream& os, StringGenerator str)
-{
-	return (os << static_cast<std::string>(str));
-}
 
 /**
  * @brief Generate std::map of random values
