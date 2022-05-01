@@ -8,6 +8,8 @@
 // Creates a string literal, enclosing the argument between quotes
 # define UCPP_STRINGIZE(name) #name
 
+typedef unsigned long   counter_t;
+
 enum test_unit_type { TUT_CASE = 0x01, TUT_SUITE = 0x10, TUT_ANY = 0x11 };
 
 typedef unsigned long   test_unit_id;
