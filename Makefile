@@ -46,6 +46,17 @@ DELPREV		=	$(UP)$(DELETE)\r
 CHECK		=	\xE2\x9C\x94
 CROSS		=	\xE2\x9D\x8C
 
+# HEADER
+HEAD_SIZE	=	32
+NAME_SIZE	=	$(shell NAME='$(NAME)'; printf "$${#NAME}")
+PAD_WIDTH	=	$(shell printf "$$((($(HEAD_SIZE) - $(NAME_SIZE)) / 2))")
+PAD_PREC	=	$(shell printf "$$(($(PAD_WIDTH) / 2))")
+PAD_CHAR	=	\*
+PAD_STR		=	$(shell printf '$(PAD_CHAR)%.0s' {1..$(PAD_WIDTH)})
+LEFT_PAD	=	$(shell printf '%-*.*s' $(PAD_WIDTH) $(PAD_PREC) $(PAD_STR))
+RIGHT_PAD	=	$(shell printf '%*.*s' $(PAD_WIDTH) $$(($(PAD_PREC) - $(NAME_SIZE) % 2)) $(PAD_STR))
+BODY_WIDTH	=	$(shell printf "$$(($(HEAD_SIZE) - 1))")
+
 
 ###########
 ## Rules ##
@@ -58,7 +69,7 @@ all:			header $(NAME)
 $(BUILDIR)/%.o:	%.cpp | $(DEPDIR)
 				@printf "$(YELLOW)Compiling $@ and generating/checking make dependency file...$(DEFAULT)\n"
 				@$(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
-				@printf "$(DELPREV)%-25s%*s$(GREEN)$(CHECK)$(DEFAULT)\n" $(notdir $@) $(shell printf $(NAME) | wc -c)
+				@printf '$(DELPREV)%-*s$(GREEN)$(CHECK)$(DEFAULT)\n' $(BODY_WIDTH) $(notdir $@)
 
 $(NAME):		$(OBJ)
 				@printf "$(YELLOW)Generating $@...$(DEFAULT)\n"
@@ -73,7 +84,7 @@ $(DEP):
 -include $(wildcard $(DEP))
 
 header:
-				@printf "**********%3$1s$(BLUE)$(NAME)$(DEFAULT)%3$1s**********\n" ""
+				@printf '$(LEFT_PAD)$(BLUE)$(NAME)$(DEFAULT)$(RIGHT_PAD)\n'
 
 clean:
 				@printf "$(YELLOW)Deleting object and dependency files...$(DEFAULT)\n"

@@ -8,11 +8,11 @@ TestSuite::TestSuite( void )
 { return ; }
 
 TestSuite::TestSuite( const TestSuite& src )
-: TestUnit(t_suite, src.name), std::list<TestCase>(src)
+: TestUnit(TUT_SUITE, src.name), std::list<TestCase>(src)
 { return ; }
 
 TestSuite::TestSuite( const std::string& str, unsigned time, unsigned nb_fail )
-: TestUnit(t_suite, str, time, nb_fail), std::list<TestCase>()
+: TestUnit(TUT_SUITE, str, time, nb_fail), std::list<TestCase>()
 { return ; }
 
 TestSuite::~TestSuite( void )

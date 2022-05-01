@@ -3,7 +3,6 @@
 
 # include <cstdlib>
 # include <cassert>
-# include "utils/Singleton.hpp"
 # include "test/TestSuite.hpp"
 # include "test/TestRunner.hpp"
 # include "utils/random.hpp"
