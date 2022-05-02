@@ -8,10 +8,11 @@
 # include "auto_registration.hpp"
 
 // STL
+# include <cassert>
 # include <algorithm>
+# include <string>
 # include <vector>
 # include <set>
-# include <cassert>
 
 namespace unit_test {
 
@@ -19,7 +20,7 @@ namespace unit_test {
 // **************                   test_unit                  ************** //
 // ************************************************************************** //
 
-test_unit::test_unit( ::std::string name, ::std::string file_name, ::std::size_t line_num, test_unit_type t )
+test_unit::test_unit( std::string name, std::string file_name, std::size_t line_num, test_unit_type t )
 : p_type( t )
 , p_type_name( t == TUT_CASE ? "case" : "suite" )
 , p_file_name( file_name )
@@ -30,10 +31,12 @@ test_unit::test_unit( ::std::string name, ::std::string file_name, ::std::size_t
 , p_timeout( 0 )
 , p_expected_failures( 0 )
 , p_sibling_rank(0)
+, p_default_status( RS_INHERIT )
+, p_run_status( RS_INVALID )
 {
 }
 
-test_unit::test_unit( ::std::string module_name )
+test_unit::test_unit( std::string module_name )
 : p_type( TUT_SUITE )
 , p_type_name( "module" )
 , p_line_num( 0 )
@@ -43,6 +46,8 @@ test_unit::test_unit( ::std::string module_name )
 , p_timeout( 0 )
 , p_expected_failures( 0 )
 , p_sibling_rank(0)
+, p_default_status( RS_INHERIT )
+, p_run_status( RS_INVALID )
 {
 }
 
@@ -96,13 +101,13 @@ test_case::test_case( std::string name, std::string file_name, std::size_t line_
 // **************                  test_suite                  ************** //
 // ************************************************************************** //
 
-test_suite::test_suite( ::std::string name, ::std::string file_name, std::size_t line_num )
+test_suite::test_suite( std::string name, std::string file_name, std::size_t line_num )
 : test_unit( ut_detail::normalize_test_case_name( name ), file_name, line_num, static_cast<test_unit_type>(type) )
 {
     framework::register_test_unit( this );
 }
 
-test_suite::test_suite( ::std::string module_name )
+test_suite::test_suite( std::string module_name )
 : test_unit( module_name )
 {
     framework::register_test_unit( this );
@@ -123,22 +128,103 @@ test_suite::add( test_unit* tu, counter_t expected_failures, unsigned timeout )
         tu->increase_exp_fail( expected_failures );
 }
 
+void
+test_suite::remove( test_unit_id id )
+{
+    test_unit_id_list::iterator it = std::find( m_children.begin(), m_children.end(), id );
+
+    if( it != m_children.end() )
+        m_children.erase( it );
+}
+
+test_unit_id
+test_suite::get( std::string tu_name ) const
+{
+    for( test_unit_id_list::const_iterator it = m_children.begin();
+        it != m_children.end();
+        it++ ) {
+        if( tu_name == framework::get( (*it), ut_detail::test_id_2_unit_type( (*it) ) ).p_name )
+            return (*it);
+    }
+
+    return INV_TEST_UNIT_ID;
+}
+
+// ************************************************************************** //
+// **************               master_test_suite              ************** //
+// ************************************************************************** //
+
+master_test_suite_t::master_test_suite_t()
+: test_suite( "Master Test Suite" )
+, argc( 0 )
+, argv( 0 )
+{
+}
+
+// ************************************************************************** //
+// **************               traverse_test_tree             ************** //
+// ************************************************************************** //
+
+void
+traverse_test_tree( test_case const& tc, test_tree_visitor& V, bool ignore_status )
+{
+    if( tc.is_enabled() || ignore_status )
+        V.visit( tc );
+}
+
+void
+traverse_test_tree( test_suite const& suite, test_tree_visitor& V, bool ignore_status )
+{
+    // skip disabled test suite unless we asked to ignore this condition
+    if( !ignore_status && !suite.is_enabled() )
+        return;
+
+    // Invoke test_suite_start callback
+    if( !V.test_suite_start( suite ) )
+        return;
+
+    // Recurse into children
+    std::size_t total_children = suite.m_children.size();
+    for( std::size_t i=0; i < total_children; ) {
+        // this statement can remove the test unit from this list
+        traverse_test_tree( suite.m_children[i], V, ignore_status );
+        if( total_children > suite.m_children.size() )
+            total_children = suite.m_children.size();
+        else
+            ++i;
+    }
+
+    // Invoke test_suite_finish callback
+    V.test_suite_finish( suite );
+}
+
+//____________________________________________________________________________//
+
+void
+traverse_test_tree( test_unit_id id, test_tree_visitor& V, bool ignore_status )
+{
+    if( ut_detail::test_id_2_unit_type( id ) == TUT_CASE )
+        traverse_test_tree( framework::get<test_case>( id ), V, ignore_status );
+    else
+        traverse_test_tree( framework::get<test_suite>( id ), V, ignore_status );
+}
+
 // ************************************************************************** //
 // **************               object generators              ************** //
 // ************************************************************************** //
 
 namespace ut_detail {
 
-::std::string
-normalize_test_case_name( ::std::string name )
+std::string
+normalize_test_case_name( std::string name )
 {
-	::std::string norm_name( name );
+	std::string norm_name( name );
 
     if( name[0] == '&' )
         norm_name = norm_name.substr( 1 );
 
     // trim spaces
-	::std::size_t first_not_space = norm_name.find_first_not_of(' ');
+	std::size_t first_not_space = norm_name.find_first_not_of(' ');
     if( first_not_space ) {
         norm_name.erase(0, first_not_space);
     }
@@ -171,7 +257,7 @@ auto_test_unit_registrar::auto_test_unit_registrar( test_case* tc/*, decorator::
 	// decorators.reset();
 }
 
-auto_test_unit_registrar::auto_test_unit_registrar( ::std::string ts_name, ::std::string ts_file, ::std::size_t ts_line/*, decorator::collector_t& decorators*/ )
+auto_test_unit_registrar::auto_test_unit_registrar( std::string ts_name, std::string ts_file, std::size_t ts_line/*, decorator::collector_t& decorators*/ )
 {
     test_unit_id id = framework::current_auto_test_suite().get( ts_name );
 

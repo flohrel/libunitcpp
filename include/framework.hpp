@@ -39,7 +39,7 @@ void					run( test_unit const* tu, bool continue_test = true );
 
 namespace impl {
 struct master_test_suite_name_setter {
-	master_test_suite_name_setter( ::std::string name );
+	master_test_suite_name_setter( std::string name );
 };
 }	// namespace impl
 }	// namespace framework
