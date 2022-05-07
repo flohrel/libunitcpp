@@ -1,5 +1,5 @@
 # include "framework.hpp"
-# include "test/TestUnit.hpp"
+# include "test_unit.hpp"
 
 namespace unit_test {
 
@@ -21,9 +21,9 @@ unit_test_main( init_unit_test_ft init_func, int argc, char* argv[] )
 int
 main( int argc, char* argv[] )
 {
-	extern ::unit_test::TestSuite*	init_unit_test_suite( int argc, char* argv[] );
+	extern unit_test::test_suite*	init_unit_test_suite( int argc, char* argv[] );
 
 	unit_test::init_unit_test_ft init_func = &init_unit_test_suite;
 
-    return (::unit_test::unit_test_main( init_func, argc, argv ));
+    return (unit_test::unit_test_main( init_func, argc, argv ));
 }

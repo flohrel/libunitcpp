@@ -1,5 +1,5 @@
-#ifndef __TEST_TREE__I__
-# define __TEST_TREE__I__
+#ifndef __TEST_TREE__IPP__
+# define __TEST_TREE__IPP__
 
 # include "framework.hpp"
 # include "test_unit.hpp"
@@ -30,9 +30,9 @@ test_unit::test_unit( std::string name, std::string file_name, std::size_t line_
 , p_name( name )
 , p_timeout( 0 )
 , p_expected_failures( 0 )
-, p_sibling_rank(0)
 , p_default_status( RS_INHERIT )
 , p_run_status( RS_INVALID )
+, p_sibling_rank(0)
 {
 }
 
@@ -45,9 +45,9 @@ test_unit::test_unit( std::string module_name )
 , p_name( module_name )
 , p_timeout( 0 )
 , p_expected_failures( 0 )
-, p_sibling_rank(0)
 , p_default_status( RS_INHERIT )
 , p_run_status( RS_INVALID )
+, p_sibling_rank(0)
 {
 }
 
@@ -61,14 +61,14 @@ test_unit::increase_exp_fail( counter_t num )
 {
     p_expected_failures += num;
 
-    if( p_parent_id != INV_TEST_UNIT_ID )
+    if ( p_parent_id != INV_TEST_UNIT_ID )
         framework::get<test_suite>( p_parent_id ).increase_exp_fail( num );
 }
 
 std::string
 test_unit::full_name() const
 {
-    if( p_parent_id == INV_TEST_UNIT_ID || p_parent_id == framework::master_test_suite().p_id )
+    if ( p_parent_id == INV_TEST_UNIT_ID || p_parent_id == framework::master_test_suite().p_id )
         return p_name;
 
     std::string res = framework::get<test_suite>( p_parent_id ).full_name();

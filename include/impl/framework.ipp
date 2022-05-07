@@ -32,7 +32,7 @@ invoke_init_func( init_unit_test_ft init_func )
 {
     test_suite*  manual_test_units = (*init_func)( framework::master_test_suite().argc, framework::master_test_suite().argv );
 
-    if( manual_test_units )
+    if ( manual_test_units )
         framework::master_test_suite().add( manual_test_units );
 }
 
@@ -115,6 +115,7 @@ init( init_unit_test_ft init_func, int argc, char* argv[] )
 	master_test_suite().argc = argc;
 	master_test_suite().argv = argv;
 
+    impl::invoke_init_func( init_func );
     // s_frk_state().m_execution_monitor.execute( &impl::invoke_init_func( init_func ) );
 }
 
@@ -169,8 +170,6 @@ deregister_test_unit( test_unit* tu )
 {
     impl::s_frk_state().m_test_units.erase( tu->p_id );
 }
-
-//____________________________________________________________________________//
 
 // ************************************************************************** //
 // **************                     clear                    ************** //

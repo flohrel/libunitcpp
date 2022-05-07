@@ -13,9 +13,11 @@ namespace unit_test {
 
 namespace framework {
   class state;
+
+  master_test_suite_t& master_test_suite();
 }
 
-typedef ::std::vector<test_unit_id> test_unit_id_list;
+typedef std::vector<test_unit_id> test_unit_id_list;
 
 // ************************************************************************** //
 // **************                   test_unit                  ************** //
@@ -77,7 +79,6 @@ protected:
 
 class test_case : public test_unit {
 public:
-	typedef void (*test_ft)(void);
     enum { type = TUT_CASE };
 
     // Constructor
@@ -100,32 +101,17 @@ class test_suite : public test_unit {
 public:
     enum { type = TUT_SUITE };
 
-    // Constructor
     explicit		test_suite( std::string ts_name, std::string ts_file, std::size_t ts_line );
 
-    // test unit list management
-
-    /*!@brief Adds a test unit to a test suite.
-     *
-     * It is possible to specify the timeout and the expected failures.
-     */
 	void			add( test_unit* tu, counter_t expected_failures = 0, unsigned timeout = 0 );
-
-    //! Removes a test from the test suite.
 	void			remove( test_unit_id id );
-  
-    //! Generates all the delayed test_units from the generators
 	// void			generate();
-
-    //! Check for duplicates name in test cases
 	void			check_for_duplicate_test_cases();
 
-    // access methods
 	test_unit_id        get( std::string tu_name ) const;
 	std::size_t		    size() const { return m_children.size(); }
 
 protected:
-    // Master test suite constructor
 	explicit        test_suite( std::string module_name );
 
     friend void     traverse_test_tree( test_suite const&, test_tree_visitor&, bool );
@@ -133,12 +119,35 @@ protected:
 	virtual			~test_suite() {}
 
     typedef std::multimap<counter_t,test_unit_id> children_per_rank;
-    // Data members
 
     test_unit_id_list   m_children;
     children_per_rank   m_ranked_children; ///< maps child sibling rank to list of children with that rank
 
 };
+
+// ************************************************************************** //
+// **************            user_tc_method_invoker            ************** //
+// ************************************************************************** //
+
+namespace ut_detail {
+
+std::string normalize_test_case_name( std::string tu_name );
+
+template<typename InstanceType,typename UserTestCase>
+struct user_tc_method_invoker {
+    typedef void (UserTestCase::*TestMethod )();
+
+    user_tc_method_invoker( InstanceType inst, TestMethod test_method )
+    : m_inst( inst ), m_test_method( test_method ) {}
+
+    void operator()() { ((*m_inst).*m_test_method)(); }
+
+    InstanceType                m_inst;
+    TestMethod                  m_test_method;
+};
+
+}   // namespace ut_detail
+
 
 // ************************************************************************** //
 // **************               master_test_suite              ************** //
@@ -154,9 +163,39 @@ public:
     // Data members
     int      argc;
     char**   argv;
-  
-    friend master_test_suite_t& framework::master_test_suite();
+    
+    friend master_test_suite_t& unit_test::framework::master_test_suite();
 };
+
+namespace ut_detail {
+
+std::string normalize_test_case_name( std::string tu_name );
+
+}
+
+// ************************************************************************** //
+// **************                make_test_case                ************** //
+// ************************************************************************** //
+
+inline test_case*
+make_test_case( test_ft test_func, std::string tc_name, std::string tc_file, std::size_t tc_line )
+{
+    return new test_case( ut_detail::normalize_test_case_name( tc_name ), tc_file, tc_line, test_func );
+}
+
+template<typename UserTestCase, typename InstanceType>
+inline test_case*
+make_test_case( void (UserTestCase::*       test_method )(),
+                std::string                 tc_name,
+                std::string                 tc_file,
+                std::size_t                 tc_line,
+                InstanceType                user_test_case )
+{
+    return new test_case( ut_detail::normalize_test_case_name( tc_name ),
+                          tc_file,
+                          tc_line,
+                          ut_detail::user_tc_method_invoker<InstanceType,UserTestCase>( user_test_case, test_method ) );
+}
 
 }
 

@@ -2,11 +2,11 @@
 # define __GLOBAL_TYPEDEFS__H__
 
 // Concatenates strings
-# define UCPP_JOIN_IMPL_(foo, bar) foo##bar
-# define UCPP_JOIN(foo, bar) UCPP_JOIN_IMPL_(foo, bar)
+# define JOIN_IMPL_(foo, bar) foo##bar
+# define JOIN(foo, bar) JOIN_IMPL_(foo, bar)
 
 // Creates a string literal, enclosing the argument between quotes
-# define UCPP_STRINGIZE(name) #name
+# define STRINGIZE(name) #name
 
 namespace unit_test {
 
@@ -15,6 +15,7 @@ typedef unsigned long   counter_t;
 enum test_unit_type { TUT_CASE = 0x01, TUT_SUITE = 0x10, TUT_ANY = 0x11 };
 
 typedef unsigned long   test_unit_id;
+typedef void   			 (*test_ft)();
 
 const test_unit_id INV_TEST_UNIT_ID  = 0xFFFFFFFF;
 const test_unit_id MAX_TEST_CASE_ID  = 0xFFFFFFFE;

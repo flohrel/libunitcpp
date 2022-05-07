@@ -3,6 +3,7 @@
 
 # include "global_typedefs.hpp"
 # include "forward_decl.hpp"
+# include "test_unit.hpp"
 
 // STL
 # include <string>
@@ -41,6 +42,7 @@ namespace impl {
 struct master_test_suite_name_setter {
 	master_test_suite_name_setter( std::string name );
 };
+
 }	// namespace impl
 }	// namespace framework
 }	// namespace unit_test
