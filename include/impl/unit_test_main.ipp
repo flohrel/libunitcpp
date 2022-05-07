@@ -9,7 +9,8 @@ unit_test_main( init_unit_test_ft init_func, int argc, char* argv[] )
 	int result_code = 0;
 
 	framework::init( init_func, argc, argv );
-	// framework::run();
+
+	framework::run();
 
 	// result_code = results_collector.results( framework::master_test_suite().p_id ).result_code();
 

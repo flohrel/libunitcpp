@@ -73,6 +73,29 @@ public:
 
     void            set_tu_id( test_unit& tu, test_unit_id id ) { tu.p_id = id; }
 
+    int execute_test_tree( test_unit_id tu_id )
+    {
+        int result = 0;
+
+        test_unit const& tu = framework::get( tu_id, TUT_ANY );
+
+        if( tu.p_type == TUT_SUITE ) {
+            test_suite const& ts = static_cast<test_suite const&>( tu );
+
+            for (std::vector<test_unit_id>::const_iterator tc = ts.m_children.begin(); tc != ts.m_children.end(); tc++)
+            {
+                result |= execute_test_tree( *tc );
+            }
+        }
+        else {
+            test_case const& tc = static_cast<test_case const&>( tu );
+
+            tc.p_test_func();
+        }
+
+        return result;
+    }
+
 	    // Data members
     typedef std::map<test_unit_id,test_unit*>       test_unit_store;
     // typedef ::std::set<test_observer*,priority_order> observer_store;
@@ -293,6 +316,25 @@ get( test_unit_id id, test_unit_type t )
     assert( (res->p_type & t) != 0 );		// Invalid test unit type
 
     return *res;
+}
+
+// ************************************************************************** //
+// **************                framework::run                ************** //
+// ************************************************************************** //
+
+void
+run( test_unit_id id )
+{
+    if( id == INV_TEST_UNIT_ID )
+        id = master_test_suite().p_id;
+
+    impl::s_frk_state().execute_test_tree( id );
+}
+
+void
+run( test_unit const* tu )
+{
+    run( tu->p_id );
 }
 
 }	// namespace framework

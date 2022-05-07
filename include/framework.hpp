@@ -35,8 +35,8 @@ inline UnitType&		get( test_unit_id id )
     return static_cast<UnitType&>( get( id, static_cast<test_unit_type>(UnitType::type) ) );
 }
 
-void					run( test_unit_id tu = INV_TEST_UNIT_ID, bool continue_test = true );
-void					run( test_unit const* tu, bool continue_test = true );
+void					run( test_unit_id tu = INV_TEST_UNIT_ID );
+void					run( test_unit const* tu );
 
 namespace impl {
 struct master_test_suite_name_setter {

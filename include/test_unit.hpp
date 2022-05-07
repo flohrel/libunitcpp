@@ -183,20 +183,6 @@ make_test_case( test_ft test_func, std::string tc_name, std::string tc_file, std
     return new test_case( ut_detail::normalize_test_case_name( tc_name ), tc_file, tc_line, test_func );
 }
 
-template<typename UserTestCase, typename InstanceType>
-inline test_case*
-make_test_case( void (UserTestCase::*       test_method )(),
-                std::string                 tc_name,
-                std::string                 tc_file,
-                std::size_t                 tc_line,
-                InstanceType                user_test_case )
-{
-    return new test_case( ut_detail::normalize_test_case_name( tc_name ),
-                          tc_file,
-                          tc_line,
-                          ut_detail::user_tc_method_invoker<InstanceType,UserTestCase>( user_test_case, test_method ) );
-}
-
 }
 
 #endif
