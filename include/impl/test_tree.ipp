@@ -1,5 +1,5 @@
-#ifndef __TEST_TREE__IPP__
-# define __TEST_TREE__IPP__
+#ifndef __TEST_TREE__I__
+# define __TEST_TREE__I__
 
 # include "framework.hpp"
 # include "test_unit.hpp"

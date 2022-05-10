@@ -22,57 +22,57 @@
 #endif
 /**/
 
-#define AUTO_TU_REGISTRAR( test_name )                                                          \
-static unit_test::ut_detail::auto_test_unit_registrar                                           \
-TEST_APPEND_UNIQUE_ID( JOIN( test_name, _registrar ) ) __attribute__ ((__unused__))             \
+#define TU_REGISTRAR( test_name )                                                       \
+static unit_test::ut_detail::auto_test_unit_registrar                                   \
+TEST_APPEND_UNIQUE_ID( JOIN( test_name, _registrar ) ) __attribute__ ((__unused__))     \
 /**/
-#define AUTO_TC_INVOKER( test_name )      JOIN( test_name, _invoker )
-#define AUTO_TC_UNIQUE_ID( test_name )    JOIN( test_name, _id )
+#define TC_INVOKER( test_name )      JOIN( test_name, _invoker )
+#define TC_UNIQUE_ID( test_name )    JOIN( test_name, _id )
 
 // ************************************************************************** //
-// **************             AUTO_TEST_SUITE                  ************** //
+// **************             TEST_SUITE                  ************** //
 // ************************************************************************** //
 
-#define AUTO_TEST_SUITE_NO_DECOR( suite_name )					    \
-namespace suite_name {											    \
-AUTO_TU_REGISTRAR( suite_name )(								    \
-    STRINGIZE( suite_name ),								    	\
-    __FILE__, __LINE__);								    		\
+#define TEST_SUITE_NO_DECOR( suite_name )       \
+namespace suite_name {                          \
+TU_REGISTRAR( suite_name )(                     \
+    STRINGIZE( suite_name ),                    \
+    __FILE__, __LINE__);                        \
 
-#define AUTO_TEST_SUITE( suite_name )			    				\
-    AUTO_TEST_SUITE_NO_DECOR( suite_name )		    				\
-/**/
-
-// ************************************************************************** //
-// **************           AUTO_TEST_SUITE_END                ************** //
-// ************************************************************************** //
-
-#define AUTO_TEST_SUITE_END()                                       \
-AUTO_TU_REGISTRAR( end_suite )( 1 );                                \
-}                                                                   \
+#define TEST_SUITE( suite_name )        \
+    TEST_SUITE_NO_DECOR( suite_name )   \
 /**/
 
 // ************************************************************************** //
-// **************               AUTO_TEST_CASE                 ************** //
+// **************           TEST_SUITE_END                ************** //
 // ************************************************************************** //
 
-#define AUTO_TEST_CASE( test_name )                                 \
-struct test_name { void test_method(); };		                	\
-                                                                	\
-static void AUTO_TC_INVOKER( test_name )()                      	\
-{                                                               	\
-    test_name t;                                                	\
-    t.test_method();                                            	\
-}                                                               	\
-                                	                        		\
-struct AUTO_TC_UNIQUE_ID( test_name ) {};                       	\
-                                                                    \
-AUTO_TU_REGISTRAR( test_name )(                                 	\
-    unit_test::make_test_case(										\
-        &AUTO_TC_INVOKER( test_name ),                          	\
-        #test_name, __FILE__, __LINE__ ));                          \
-                                                            		\
-void test_name::test_method()										\
+#define TEST_SUITE_END()            \
+TU_REGISTRAR( end_suite )( 1 );     \
+}                                   \
+/**/
+
+// ************************************************************************** //
+// **************               TEST_CASE                 ************** //
+// ************************************************************************** //
+
+#define TEST_CASE( test_name )                              \
+struct test_name { void test_method(); };                   \
+                                                            \
+static void TC_INVOKER( test_name )()                       \
+{                                                           \
+    test_name t;                                            \
+    t.test_method();                                        \
+}                                                           \
+                                	                        \
+struct TC_UNIQUE_ID( test_name ) {};                       	\
+                                                            \
+TU_REGISTRAR( test_name )(                                 	\
+    unit_test::make_test_case(							    \
+        &TC_INVOKER( test_name ),                          	\
+        #test_name, __FILE__, __LINE__ ));                  \
+                                                            \
+void test_name::test_method()								\
 /**/
 
 // ************************************************************************** //

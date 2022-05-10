@@ -1,3 +1,6 @@
+#ifndef __UNIT_TEST_MAIN__I__
+# define __UNIT_TEST_MAIN__I__
+
 # include "framework.hpp"
 # include "test_unit.hpp"
 
@@ -28,3 +31,5 @@ main( int argc, char* argv[] )
 
     return (unit_test::unit_test_main( init_func, argc, argv ));
 }
+
+#endif

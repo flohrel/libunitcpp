@@ -1,5 +1,5 @@
-#ifndef __FRAMEWORK__IPP__
-# define __FRAMEWORK__IPP__
+#ifndef __FRAMEWORK__I__
+# define __FRAMEWORK__I__
 
 # include "framework.hpp"
 # include "test_unit.hpp"
@@ -73,7 +73,7 @@ public:
 
     void            set_tu_id( test_unit& tu, test_unit_id id ) { tu.p_id = id; }
 
-    int execute_test_tree( test_unit_id tu_id )
+    int             execute_test_tree( test_unit_id tu_id )
     {
         int result = 0;
 
