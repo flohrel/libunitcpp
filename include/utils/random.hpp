@@ -1,6 +1,7 @@
 #ifndef __RANDOM__H__
 # define __RANDOM__H__
 
+# include <algorithm>
 # include <iostream>
 # include <string>
 # include <vector>
@@ -29,7 +30,7 @@ class RandomGenerator
 		typedef	T		value_type;
 
 		RandomGenerator( void )
-		: _max_value(std::numeric_limits<T>::max() < RAND_MAX ? std::numeric_limits<T>::max() : RAND_MAX)
+		: _max_value(std::max(std::numeric_limits<T>::max(), RAND_MAX))
 		{ srand(time(0) * getpid()); return ; }
 
 		RandomGenerator( const RandomGenerator& src )

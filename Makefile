@@ -9,11 +9,7 @@ INCLDIR		=	include
 BUILDIR		=	build
 DEPDIR		=	$(BUILDIR)/.deps
 
-SRC			=	TestUnit.cpp \
-				TestSuite.cpp \
-				TestCase.cpp \
-				TestRunner.cpp \
-				ResultCollector.cpp
+SRC			=
 OBJ			=	$(SRC:%.cpp=$(BUILDIR)/%.o)
 DEP			=	$(SRC:%.cpp=$(DEPDIR)/%.d)
 
