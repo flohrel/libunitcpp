@@ -18,6 +18,17 @@
 // #include <cmath>
 // #include <iterator>
 
+// OLD FUNCTIONS
+# include <algorithm>
+# include <cstdio>
+# include <cerrno>
+# include <iostream>
+# include <string.h>
+# include <sys/types.h>
+# include <unistd.h>
+# include "ResultCollector.hpp"
+# include "utils/ansi_colors.hpp"
+
 namespace unit_test {
 namespace framework {
 
@@ -73,32 +84,90 @@ public:
 
     void            set_tu_id( test_unit& tu, test_unit_id id ) { tu.p_id = id; }
 
+// OLD FUNCTION
+    void
+    print_suite_results( ResultCollector& results, unsigned count )
+    {
+        unsigned passed = results.test_cases_passed;
+        unsigned failed = results.test_cases_failed;
+        unsigned aborted = results.test_cases_aborted;
+
+        std::cout << "===> ";
+        if (passed == count)
+            std::cout << "No errors detected" << std::endl;
+        else
+        {
+            std::cout 
+                << YEL << failed << RESET << " failed, "
+                << RED << aborted << RESET << " aborted, "
+                << GRN << passed << RESET << " passed."
+            << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
+// OLD FUNCTION
+    void
+    run_test( test_case const& tc )
+    {
+        pid_t	pid;
+
+        pid = fork();
+        if (pid == -1)
+        {
+            strerror(errno);
+            exit(EXIT_FAILURE);
+        }
+        else if (pid == 0)
+        {
+            tc.p_test_func();
+            alarm(tc.p_timeout);
+            exit(EXIT_SUCCESS);
+        }
+    }
+
+// CONTAINS OLD THINGS TO CHANGE
     int             execute_test_tree( test_unit_id tu_id )
     {
-        int result = 0;
+        int             result = 0;
+        ResultCollector	results;
+	    chrono			chrono;
 
         test_unit const& tu = framework::get( tu_id, TUT_ANY );
 
         if( tu.p_type == TUT_SUITE ) {
             test_suite const& ts = static_cast<test_suite const&>( tu );
 
+	        std::cout << "Entering test suite " << "\"" << ts.full_name() << "\"" << std::endl;
+	        std::cout << "Running " << ts.m_children.size() << " " << ((ts.m_children.size() > 1) ? "tests" : "test") << "..." << std::endl;
+	        chrono.start();
             for (std::vector<test_unit_id>::const_iterator tc = ts.m_children.begin(); tc != ts.m_children.end(); tc++)
             {
                 result |= execute_test_tree( *tc );
             }
+            chrono.end();
+            results.duration_milliseconds = chrono.get_execution_time();
+            std::cout << "Leaving test suite " << "\"" << ts.full_name()
+				        << "\"; testing time: " << results.duration_milliseconds << "ms" << std::endl;
+	        print_suite_results(results, ts.m_children.size());
         }
         else {
             test_case const& tc = static_cast<test_case const&>( tu );
+            std::cout << "Entering test case " << "\"" << tc.full_name() << "\"" << std::endl;
 
-            tc.p_test_func();
-        }
+            run_test(tc);
+
+		    results.get_results();
+		    std::cout << "Leaving test case " << "\"" << tc.full_name()
+					    << "\"; testing time: " << results.duration_milliseconds << "ms" << std::endl;
+	    }
 
         return result;
     }
 
 	    // Data members
     typedef std::map<test_unit_id,test_unit*>       test_unit_store;
-    // typedef ::std::set<test_observer*,priority_order> observer_store;
+    // typedef std::set<test_observer*,priority_order> observer_store;
 
     master_test_suite_t*			m_master_test_suite;
     std::vector<test_suite*>		m_auto_test_suites;
@@ -325,10 +394,18 @@ get( test_unit_id id, test_unit_type t )
 void
 run( test_unit_id id )
 {
+    ResultCollector	results;
+	chrono			chrono;
+
     if( id == INV_TEST_UNIT_ID )
         id = master_test_suite().p_id;
-
+    
+    chrono.start();
     impl::s_frk_state().execute_test_tree( id );
+    chrono.end();
+
+    results.duration_milliseconds = chrono.get_execution_time();
+	std::cout << std::endl << "Total elapsed time: " << results.duration_milliseconds << "ms" << std::endl;
 }
 
 void

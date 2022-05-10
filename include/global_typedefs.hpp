@@ -33,23 +33,29 @@ test_id_2_unit_type( test_unit_id id )
 
 } // namespace ut_detail
 
-template< typename T >
-class singleton
-{
-	public:
-        static T&		instance() { static T instance; return (instance); }
+#define SINGLETON_CONS_NO_CTOR( type )					\
+public:                                                 \
+	static type& instance();							\
+private:                                                \
+	type(type const&) {}								\
+	type& operator=(type const&) {}						\
+	~type() {}											\
+/**/
 
+#define SINGLETON_CONS( type )							\
+	SINGLETON_CONS_NO_CTOR(type)						\
+private:                                                \
+	type(), {}											\
+/**/
 
-	protected:
-		singleton() { return ; }
-		~singleton() { return ; }
+#define SINGLETON_CONS_IMPL( type )						\
+	type& type::instance() {							\
+		static type the_inst; return the_inst;			\
+  }                                                     \
+/**/
 
-
-	private:
-		singleton( singleton const& src ) { (void)src; return; }
-        singleton&	operator=( singleton const& ) { return (*this); }
-
-};
+#define SINGLETON_INST( inst ) \
+namespace { JOIN( inst, _t)& inst = JOIN( inst, _t)::instance(); }
 
 }	// namespace unit_test
 

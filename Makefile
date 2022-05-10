@@ -44,7 +44,7 @@ CROSS		=	\xE2\x9D\x8C
 
 # HEADER
 HEAD_SIZE	=	32
-NAME_SIZE	=	$(shell NAME='$(NAME)'; printf "$${#NAME}")
+NAME_SIZE	=	$(shell NAME='$(NAME)'; printf "$${\#NAME}")
 PAD_WIDTH	=	$(shell printf "$$((($(HEAD_SIZE) - $(NAME_SIZE)) / 2))")
 PAD_PREC	=	$(shell printf "$$(($(PAD_WIDTH) / 2))")
 PAD_CHAR	=	\*

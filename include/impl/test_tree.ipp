@@ -220,8 +220,9 @@ normalize_test_case_name( std::string name )
 {
 	std::string norm_name( name );
 
-    if( name[0] == '&' )
+    if( name[0] == '&' ) {
         norm_name = norm_name.substr( 1 );
+    }
 
     // trim spaces
 	std::size_t first_not_space = norm_name.find_first_not_of(' ');
