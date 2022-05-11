@@ -199,6 +199,68 @@ class MapGenerator
 
 };
 
+/**
+ * @brief Generate std::set of random values
+ * 
+ * @tparam KeyGen 		Key generator
+ */
+template< typename KeyGen, typename Container = std::set< typename KeyGen::value_type > >
+class SetGenerator
+{
+	public:
+		SetGenerator( void )
+		: _size(SetGenerator::_kDefaultSize), _key_gen()
+		{ return; }
+
+		SetGenerator( size_t size, KeyGen keygen = KeyGen() )
+		: _size(size), _key_gen(keygen)
+		{ return ; }
+
+		SetGenerator( const SetGenerator& src )
+		: _size(src._size)
+		{ return ; }
+
+		~SetGenerator( void )
+		{ return ; }
+
+		Container operator()( void ) const
+		{ return (gen_random()); }
+
+		SetGenerator&
+		operator=(SetGenerator const& rhs)
+		{
+			if (this != &rhs)
+			{
+				_size = rhs._size;
+				_key_gen = rhs._key_gen;
+			}
+			return (*this);
+		}
+
+		Container
+		gen_random( void ) const
+		{
+			Container	random_set;
+
+			for (size_t i = 0; i != _size; i++)
+			{
+				random_set.insert(_key_gen.gen_random());
+    		}
+			return (random_set);
+		}
+
+		void
+		set_size( size_t size )
+		{ _size = size; }
+
+
+	private:
+		static const size_t		_kDefaultSize = 10;
+		size_t					_size;
+		KeyGen					_key_gen;
+
+};
+
 }
 
 #endif
